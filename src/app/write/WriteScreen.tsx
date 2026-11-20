@@ -8,8 +8,9 @@ import { IconButton } from "@/components/IconButton";
 import { InputField } from "@/components/InputField";
 import { LabelDot } from "@/components/LabelDot";
 import { RichEditor } from "@/components/RichEditor";
+import { clearDraft, loadDraft, saveDraft } from "@/lib/draft";
+import { createMemo } from "@/lib/memo-store";
 import type { Block, MemoLabel } from "@/lib/memos";
-import { clearDraft, loadDraft, saveDraft, saveMemo } from "@/lib/saved-memos";
 import styles from "./page.module.css";
 
 const CATEGORIES = ["업무", "개인", "아이디어"];
@@ -36,6 +37,8 @@ function WriteForm() {
   const [label, setLabel] = useState<MemoLabel>(draft?.label ?? "green");
   const [edits, setEdits] = useState(0); // 본문을 고칠 때마다 +1 (자동 저장 신호)
   const [autosaved, setAutosaved] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [saveError, setSaveError] = useState(false);
   const blocksRef = useRef<Block[]>(draft?.blocks ?? []);
   const titleRef = useRef<HTMLInputElement>(null);
   const savedRef = useRef(false); // 저장하기를 누른 뒤에는 초안을 다시 만들지 않는다
@@ -58,14 +61,24 @@ function WriteForm() {
     return () => window.clearTimeout(timer);
   }, [title, category, label, edits, draft]);
 
-  const handleSave = () => {
+  // 저장하기: Supabase 에 저장한 뒤 홈으로. 저장하는 동안에는 다시 눌러도 중복 저장되지 않는다
+  const handleSave = async () => {
     const trimmed = title.trim();
     if (!trimmed) {
       titleRef.current?.focus(); // 제목이 비어 있으면 제목 칸으로
       return;
     }
+    if (saving) return;
+    setSaving(true);
+    setSaveError(false);
+    try {
+      await createMemo({ title: trimmed, category, label, blocks: blocksRef.current });
+    } catch {
+      setSaving(false);
+      setSaveError(true);
+      return;
+    }
     savedRef.current = true;
-    saveMemo({ title: trimmed, category, label, blocks: blocksRef.current });
     clearDraft();
     router.push("/");
   };
@@ -127,7 +140,12 @@ function WriteForm() {
       </main>
 
       <div className={styles.footer}>
-        <ButtonPrimary label="저장하기" onClick={handleSave} />
+        {saveError && (
+          <p className={`${styles.error} caption-md`} role="alert">
+            저장하지 못했어요. 인터넷 연결을 확인하고 다시 눌러 주세요.
+          </p>
+        )}
+        <ButtonPrimary label={saving ? "저장 중…" : "저장하기"} onClick={handleSave} disabled={saving} />
       </div>
     </div>
   );

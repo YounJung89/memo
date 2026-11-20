@@ -7,9 +7,10 @@ type ButtonPrimaryProps = {
   icon?: boolean;
   href?: string; // 있으면 다른 화면으로 가는 링크
   onClick?: () => void;
+  disabled?: boolean;
 };
 
-export function ButtonPrimary({ label, icon = false, href, onClick }: ButtonPrimaryProps) {
+export function ButtonPrimary({ label, icon = false, href, onClick, disabled = false }: ButtonPrimaryProps) {
   const className = `${styles.buttonPrimary} button-md`;
   const content = (
     <>
@@ -25,7 +26,7 @@ export function ButtonPrimary({ label, icon = false, href, onClick }: ButtonPrim
     );
   }
   return (
-    <button type="button" className={className} onClick={onClick}>
+    <button type="button" className={className} onClick={onClick} disabled={disabled}>
       {content}
     </button>
   );

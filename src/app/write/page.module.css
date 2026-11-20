@@ -54,3 +54,8 @@
   padding: var(--space-16) 0 var(--space-34);
   background: var(--surface-page);
 }
+.error {
+  margin-bottom: var(--space-8);
+  color: var(--text-secondary);
+  text-align: center;
+}
