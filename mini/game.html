@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>이모지 메모리 카드</title>
+<style>
+  :root {
+    --bg1: #fdf2f8;
+    --bg2: #eef2ff;
+    --ink: #3b3b58;
+    --muted: #8a8aa5;
+    --accent: #8b7cf6;
+    --card-size: min(20vw, 110px);
+    --gap: min(3vw, 14px);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    min-height: 100vh;
+    font-family: -apple-system, BlinkMacSystemFont, "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    color: var(--ink);
+    background: linear-gradient(135deg, var(--bg1), var(--bg2));
+    display: flex; flex-direction: column; align-items: center;
+    padding: 24px 12px;
+  }
+  h1 { font-size: 24px; margin-bottom: 16px; }
+  .bar {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap; justify-content: center;
+    margin-bottom: 24px;
+  }
+  .stat {
+    background: #fff; border-radius: 999px; padding: 8px 18px;
+    box-shadow: 0 4px 14px rgba(120,110,200,.12);
+    font-size: 15px; font-variant-numeric: tabular-nums;
+  }
+  .stat b { margin-left: 6px; }
+  button {
+    font: inherit; font-weight: 600; font-size: 15px; color: #fff;
+    background: var(--accent); border: 0; border-radius: 999px;
+    padding: 9px 20px; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(139,124,246,.35);
+    transition: transform .15s, filter .15s;
+  }
+  button:hover { filter: brightness(1.05); transform: translateY(-1px); }
+
+  .board {
+    display: grid;
+    grid-template-columns: repeat(4, var(--card-size));
+    grid-auto-rows: var(--card-size);
+    gap: var(--gap);
+  }
+  .card {
+    perspective: 600px; cursor: pointer; border: 0; background: none; padding: 0;
+    box-shadow: none; border-radius: 0;
+  }
+  .card:hover { transform: none; filter: none; }
+  .inner {
+    position: relative; width: 100%; height: 100%;
+    transform-style: preserve-3d; transition: transform .35s;
+  }
+  .card.flipped .inner, .card.matched .inner { transform: rotateY(180deg); }
+  .face {
+    position: absolute; inset: 0; backface-visibility: hidden;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: 20px; box-shadow: 0 6px 16px rgba(120,110,200,.18);
+  }
+  .back {
+    background: linear-gradient(135deg, #e0d9ff, #ffd9ec);
+    font-size: calc(var(--card-size) * .3); color: rgba(255,255,255,.9);
+  }
+  .front {
+    background: #fff; transform: rotateY(180deg);
+    font-size: calc(var(--card-size) * .5);
+  }
+  .card.matched { cursor: default; pointer-events: none; }
+  .card.matched .front { opacity: .45; }
+
+  .overlay {
+    position: fixed; inset: 0; background: rgba(60,50,100,.3);
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: #fff; border-radius: 28px; padding: 36px 40px; text-align: center;
+    box-shadow: 0 20px 50px rgba(60,50,100,.3);
+  }
+  .modal .big { font-size: 48px; margin-bottom: 8px; }
+  .modal h2 { font-size: 24px; margin-bottom: 12px; }
+  .modal p { color: var(--muted); margin-bottom: 24px; line-height: 1.8; }
+  .modal p b { color: var(--ink); }
+</style>
+</head>
+<body>
+  <h1>🧠 이모지 메모리 카드</h1>
+  <div class="bar">
+    <div class="stat">⏱ <b id="time">00:00</b></div>
+    <div class="stat">시도 <b id="tries">0</b></div>
+    <button id="restart">다시 시작</button>
+  </div>
+  <div class="board" id="board"></div>
+
+  <div class="overlay" id="overlay">
+    <div class="modal">
+      <div class="big">🎉</div>
+      <h2>완료!</h2>
+      <p>시간 <b id="rTime"></b><br>시도 횟수 <b id="rTries"></b>회</p>
+      <button id="again">다시 하기</button>
+    </div>
+  </div>
+
+<script>
+  const EMOJIS = ["🐶","🐱","🦊","🐻","🐼","🐵","🐯","🦁"];
+  const board = document.getElementById("board");
+  const timeEl = document.getElementById("time");
+  const triesEl = document.getElementById("tries");
+  const overlay = document.getElementById("overlay");
+
+  let first = null, lock = false, tries = 0, matched = 0;
+  let timer = null, startAt = 0;
+
+  function fmt(ms) {
+    const s = Math.floor(ms / 1000);
+    return String(Math.floor(s / 60)).padStart(2, "0") + ":" + String(s % 60).padStart(2, "0");
+  }
+
+  function startTimer() {
+    startAt = Date.now();
+    timer = setInterval(() => { timeEl.textContent = fmt(Date.now() - startAt); }, 250);
+  }
+
+  function shuffle(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function reset() {
+    clearInterval(timer);
+    timer = null; first = null; lock = false; tries = 0; matched = 0;
+    timeEl.textContent = "00:00"; triesEl.textContent = "0";
+    overlay.classList.remove("show");
+    board.innerHTML = "";
+    shuffle([...EMOJIS, ...EMOJIS]).forEach(e => {
+      const c = document.createElement("button");
+      c.className = "card";
+      c.dataset.emoji = e;
+      c.setAttribute("aria-label", "카드");
+      c.innerHTML = '<div class="inner"><div class="face back">✦</div><div class="face front">' + e + '</div></div>';
+      c.addEventListener("click", () => flip(c));
+      board.appendChild(c);
+    });
+  }
+
+  function flip(c) {
+    if (lock || c === first || c.classList.contains("matched") || c.classList.contains("flipped")) return;
+    if (!timer) startTimer();
+    c.classList.add("flipped");
+    if (!first) { first = c; return; }
+
+    tries++; triesEl.textContent = tries;
+    const a = first, b = c;
+    first = null;
+    if (a.dataset.emoji === b.dataset.emoji) {
+      a.classList.replace("flipped", "matched");
+      b.classList.replace("flipped", "matched");
+      if (++matched === EMOJIS.length) finish();
+    } else {
+      lock = true;
+      setTimeout(() => {
+        a.classList.remove("flipped"); b.classList.remove("flipped");
+        lock = false;
+      }, 800);
+    }
+  }
+
+  function finish() {
+    clearInterval(timer);
+    const t = fmt(Date.now() - startAt);
+    timeEl.textContent = t;
+    document.getElementById("rTime").textContent = t;
+    document.getElementById("rTries").textContent = tries;
+    setTimeout(() => overlay.classList.add("show"), 500);
+  }
+
+  document.getElementById("restart").addEventListener("click", reset);
+  document.getElementById("again").addEventListener("click", reset);
+  reset();
+</script>
+</body>
+</html>

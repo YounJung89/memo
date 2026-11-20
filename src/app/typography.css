@@ -1,0 +1,38 @@
+/* 텍스트 스타일 — 클래스 이름은 Figma 텍스트 스타일 이름 그대로 (슬래시 → 하이픈).
+   예: heading/xl → className="heading-xl"
+   폰트: Noto Sans KR (layout.tsx의 next/font가 --font-noto-sans-kr로 내려준다) */
+
+[class*="heading-"],
+[class*="title-"],
+[class*="label-"],
+[class*="body-"],
+[class*="caption-"],
+[class*="button-"] {
+  font-family: var(--font-noto-sans-kr), sans-serif;
+}
+
+.heading-xl { font-weight: 700; font-size: 28px; line-height: 38px; letter-spacing: -0.8px; }
+.heading-lg { font-weight: 700; font-size: 26px; line-height: 36px; letter-spacing: -0.8px; }
+.title-lg   { font-weight: 700; font-size: 20px; line-height: 28px; letter-spacing: -0.4px; }
+.title-md   { font-weight: 700; font-size: 17px; line-height: 24px; letter-spacing: -0.3px; }
+.label-md   { font-weight: 700; font-size: 15px; line-height: 22px; letter-spacing: -0.2px; }
+.body-md    { font-weight: 400; font-size: 16px; line-height: 28px; letter-spacing: -0.2px; }
+.body-sm    { font-weight: 400; font-size: 14px; line-height: 20px; letter-spacing: -0.1px; }
+.caption-md { font-weight: 500; font-size: 15px; line-height: 22px; letter-spacing: -0.2px; }
+.caption-sm { font-weight: 500; font-size: 13px; line-height: 18px; letter-spacing: 0; }
+.button-md  { font-weight: 700; font-size: 17px; line-height: 24px; letter-spacing: -0.2px; }
+
+/* 에디터 본문 — 상세 화면과 같은 텍스트 스타일을 쓴다.
+   제목(h2)=title/lg, 소제목(h3)=title/md, 문단·목록=body/md, 굵게=Bold */
+.rich { font-family: var(--font-noto-sans-kr), sans-serif; }
+.rich h2 { color: var(--text-primary); font-weight: 700; font-size: 20px; line-height: 28px; letter-spacing: -0.4px; }
+.rich h3 { color: var(--text-primary); font-weight: 700; font-size: 17px; line-height: 24px; letter-spacing: -0.3px; }
+.rich p,
+.rich div,
+.rich li { color: var(--text-secondary); font-weight: 400; font-size: 16px; line-height: 28px; letter-spacing: -0.2px; }
+.rich b,
+.rich strong { color: var(--text-primary); font-weight: 700; }
+.rich div:has(> ul, > h2, > h3) { display: flex; flex-direction: column; gap: var(--space-8); }
+.rich ul { display: flex; flex-direction: column; gap: var(--space-4); padding: 0; list-style: none; }
+.rich li { display: flex; gap: var(--space-8); }
+.rich li::before { content: "•"; flex: none; }

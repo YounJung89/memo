@@ -1,0 +1,56 @@
+/* Mobile/Write — 390px 모바일 기준. 더 넓은 화면에서는 가운데 정렬 */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+  width: 100%;
+  max-width: 390px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding: var(--space-48) var(--space-16) 0;
+  background: var(--surface-page);
+}
+
+.navBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.autosaved {
+  color: var(--text-muted);
+}
+.hidden {
+  visibility: hidden;
+}
+
+.main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-12);
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-12);
+  padding: var(--space-4) var(--space-8);
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+}
+.rowLabel {
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Button/Primary — 화면 아래에 가로로 꽉 차게 붙는다 */
+.footer {
+  position: sticky;
+  bottom: 0;
+  padding: var(--space-16) 0 var(--space-34);
+  background: var(--surface-page);
+}

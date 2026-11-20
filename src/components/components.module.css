@@ -1,0 +1,264 @@
+/* 컴포넌트 스타일 — 값은 디자인 토큰(var(--...))만 쓴다. 클래스 이름은 Figma 컴포넌트 이름을 따른다. */
+
+/* Chip */
+.chip {
+  height: 36px;
+  padding: 0 var(--space-16);
+  border: 0;
+  border-radius: var(--radius-full);
+  background: var(--surface-card);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.chip[aria-pressed="true"] {
+  background: var(--color-primary);
+  color: var(--text-on-primary);
+}
+
+/* Card/Container */
+.cardContainer {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-8) 0;
+  border-radius: var(--radius-xl);
+  background: var(--surface-card);
+  overflow: hidden;
+}
+
+/* Card/Header */
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 40px;
+  padding: var(--space-12) var(--space-16) var(--space-4) var(--space-20);
+}
+.cardHeaderTitle {
+  flex: 1;
+  min-width: 1px;
+  color: var(--text-primary);
+}
+.pin {
+  color: var(--color-primary);
+}
+.action {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  color: var(--text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Memo/Item */
+.memoItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-16);
+  height: 72px;
+  padding: var(--space-12) var(--space-20);
+  color: inherit;
+  text-decoration: none;
+}
+.tile {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-sm);
+}
+.blue { background: var(--label-blue-soft); color: var(--label-blue); }
+.green { background: var(--label-green-soft); color: var(--label-green); }
+.orange { background: var(--label-orange-soft); color: var(--label-orange); }
+.pink { background: var(--label-pink-soft); color: var(--label-pink); }
+.memoContent {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 1px;
+}
+.memoTitle {
+  color: var(--text-primary);
+}
+.memoPreview {
+  overflow: hidden;
+  color: var(--text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.memoDate {
+  flex: none;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+
+/* Button/Icon */
+.iconButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+/* Badge — 색은 .blue/.green/.orange/.pink 가 정한다 */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 var(--space-8);
+  border-radius: var(--radius-full);
+  white-space: nowrap;
+}
+
+/* Memo/ListItem */
+.memoListItem {
+  display: flex;
+  gap: var(--space-8);
+  color: var(--text-secondary);
+  list-style: none;
+}
+.memoListText {
+  flex: 1;
+  min-width: 1px;
+}
+
+/* Input/Field */
+.inputField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-16) var(--space-20);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  cursor: text;
+}
+.inputField:focus-within {
+  box-shadow: inset 0 0 0 2px var(--color-primary);
+}
+.inputLabel {
+  color: var(--text-muted);
+}
+.inputValue {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--text-primary);
+}
+.inputValue::placeholder {
+  color: var(--text-muted);
+}
+
+/* Label/Dot */
+.labelDot {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 2px solid transparent;
+  border-radius: var(--radius-full);
+  background: none;
+  cursor: pointer;
+}
+.labelDotSelected {
+  border-color: var(--color-primary);
+}
+.dot {
+  width: 22px;
+  height: 22px;
+  border-radius: var(--radius-full);
+}
+.dotBlue { background: var(--label-blue); }
+.dotGreen { background: var(--label-green); }
+.dotOrange { background: var(--label-orange); }
+.dotPink { background: var(--label-pink); }
+
+/* Editor + Editor/Toolbar + Button/Format */
+.editor {
+  display: flex;
+  flex-direction: column;
+  border: 2px solid var(--surface-card);
+  border-radius: var(--radius-lg);
+  background: var(--surface-card);
+  overflow: hidden;
+}
+.editor:focus-within {
+  border-color: var(--color-primary);
+}
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 52px;
+  padding: 0 var(--space-12);
+}
+.buttonFormat {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 36px;
+  padding: 0 var(--space-12);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background: none;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+.buttonFormatActive {
+  background: var(--label-blue-soft);
+  color: var(--color-primary);
+}
+.editorDivider {
+  height: 1px;
+  background: var(--border-default);
+}
+.editorBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  min-height: 160px;
+  padding: var(--space-16) var(--space-20);
+  outline: 0;
+}
+.editorBody[data-empty="true"]::before {
+  content: attr(data-placeholder);
+  color: var(--text-muted);
+  pointer-events: none;
+}
+
+/* Button/Primary */
+.buttonPrimary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-8);
+  width: 100%;
+  height: 56px;
+  padding: 0 var(--space-24);
+  border: 0;
+  border-radius: var(--radius-md);
+  background: var(--color-primary);
+  color: var(--text-on-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.buttonPrimary:active {
+  filter: brightness(0.95);
+}
